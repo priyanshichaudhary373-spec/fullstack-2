@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snake and Ladder Game</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #dff6e5;
+            padding: 15px;
+        }
+
+        h1 {
+            color: darkgreen;
+        }
+
+        .game {
+            max-width: 550px;
+            margin: auto;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            border: 3px solid #654321;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            border: 1px solid #999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .snake {
+            background: #ffcdd2;
+        }
+
+        .ladder {
+            background: #ffe0a3;
+        }
+
+        .player {
+            background: #90caf9 !important;
+            outline: 3px solid blue;
+        }
+
+        .symbol {
+            font-size: 20px;
+        }
+
+        .destination {
+            font-size: 10px;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 7px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #roll {
+            background: green;
+        }
+
+        #reset {
+            background: crimson;
+        }
+
+        #dice {
+            font-size: 35px;
+            margin: 15px;
+        }
+
+        #message {
+            font-weight: bold;
+            color: darkgreen;
+        }
+
+        @media(max-width: 400px) {
+            .cell {
+                font-size: 10px;
+            }
+
+            .symbol {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <h1>🐍 Snake and Ladder 🪜</h1>
+
+    <p>🐍 Snake &nbsp;&nbsp; 🪜 Ladder &nbsp;&nbsp; 🔵 Player</p>
+
+    <div id="board"></div>
+
+    <div id="dice">🎲</div>
+
+    <button id="roll" onclick="rollDice()">Roll Dice</button>
+
+    <button id="reset" onclick="resetGame()">New Game</button>
+
+    <h3 id="position">Player Position: 0</h3>
+
+    <p id="message">Click Roll Dice to start!</p>
+
+</div>
+
+<script>
+
+    let position = 0;
+    let gameOver = false;
+
+    let snakes = {
+        99: 54,
+        70: 55,
+        52: 42,
+        25: 2,
+        95: 72,
+        87: 36
+    };
+
+    let ladders = {
+        6: 25,
+        11: 40,
+        46: 90,
+        60: 85,
+        17: 69,
+        63: 81
+    };
+
+    let board = document.getElementById("board");
+
+    // Create board
+
+    function createBoard() {
+
+        board.innerHTML = "";
+
+        for (let row = 0; row < 10; row++) {
+
+            for (let col = 0; col < 10; col++) {
+
+                let number;
+
+                if (row % 2 === 0) {
+                    number = 100 - row * 10 - col;
+                } else {
+                    number = 91 - row * 10 + col;
+                }
+
+                let cell = document.createElement("div");
+
+                cell.className = "cell";
+                cell.id = "cell" + number;
+
+                cell.textContent = number;
+
+                if (snakes[number]) {
+
+                    cell.classList.add("snake");
+
+                    let symbol = document.createElement("span");
+                    symbol.className = "symbol";
+                    symbol.textContent = "🐍";
+
+                    let destination = document.createElement("span");
+                    destination.className = "destination";
+                    destination.textContent = "↓ " + snakes[number];
+
+                    cell.append(symbol, destination);
+                }
+
+                if (ladders[number]) {
+
+                    cell.classList.add("ladder");
+
+                    let symbol = document.createElement("span");
+                    symbol.className = "symbol";
+                    symbol.textContent = "🪜";
+
+                    let destination = document.createElement("span");
+                    destination.className = "destination";
+                    destination.textContent = "↑ " + ladders[number];
+
+                    cell.append(symbol, destination);
+                }
+
+                board.appendChild(cell);
+            }
+        }
+
+        updateBoard();
+    }
+
+    // Update player
+
+    function updateBoard() {
+
+        document.querySelectorAll(".cell").forEach(cell => {
+
+            cell.classList.remove("player");
+
+            let token = cell.querySelector(".token");
+
+            if (token) {
+                token.remove();
+            }
+        });
+
+        if (position > 0) {
+
+            let cell = document.getElementById("cell" + position);
+
+            cell.classList.add("player");
+
+            let token = document.createElement("span");
+            token.className = "token";
+            token.textContent = "🔵";
+
+            cell.appendChild(token);
+        }
+
+        document.getElementById("position").textContent =
+            "Player Position: " + position;
+    }
+
+    // Roll dice
+
+    function rollDice() {
+
+        if (gameOver) return;
+
+        let dice = Math.floor(Math.random() * 6) + 1;
+
+        document.getElementById("dice").textContent = "🎲 " + dice;
+
+        if (position + dice > 100) {
+
+            document.getElementById("message").textContent =
+                "You need an exact number to reach 100!";
+
+            return;
+        }
+
+        position += dice;
+
+        if (snakes[position]) {
+
+            let old = position;
+            position = snakes[position];
+
+            document.getElementById("message").textContent =
+                "🐍 Snake! " + old + " to " + position;
+
+        } else if (ladders[position]) {
+
+            let old = position;
+            position = ladders[position];
+
+            document.getElementById("message").textContent =
+                "🪜 Ladder! " + old + " to " + position;
+
+        } else {
+
+            document.getElementById("message").textContent =
+                "You moved to " + position;
+        }
+
+        updateBoard();
+
+        if (position === 100) {
+
+            gameOver = true;
+
+            document.getElementById("message").textContent =
+                "🎉 Congratulations! You Won!";
+        }
+    }
+
+    // Reset game
+
+    function resetGame() {
+
+        position = 0;
+        gameOver = false;
+
+        document.getElementById("dice").textContent = "🎲";
+
+        document.getElementById("message").textContent =
+            "New game started! Roll the dice.";
+
+        updateBoard();
+    }
+
+    createBoard();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>University Search Website</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #dbeafe, #e0f2fe);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px #0002;
+        }
+
+        h1 {
+            color: #173b70;
+        }
+
+        input {
+            padding: 12px;
+            width: 60%;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #1769aa;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #0d4778;
+        }
+
+        .university {
+            background: #f1f6ff;
+            padding: 15px;
+            margin: 12px 0;
+            border-left: 5px solid #1769aa;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .university h3 {
+            color: #173b70;
+        }
+
+        a {
+            color: #0877c9;
+            word-break: break-all;
+        }
+
+        #message {
+            font-weight: bold;
+            color: #1769aa;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🎓 University Search</h1>
+
+    <p>Enter a country name to find universities.</p>
+
+    <input
+        type="text"
+        id="country"
+        placeholder="Enter country (e.g. India)"
+    >
+
+    <button onclick="searchUniversity()">Search</button>
+
+    <p id="message"></p>
+
+    <div id="results"></div>
+
+</div>
+
+<script>
+
+    // Country name and country code
+
+    const countries = {
+        "india": "IN",
+        "usa": "US",
+        "united states": "US",
+        "uk": "GB",
+        "united kingdom": "GB",
+        "canada": "CA",
+        "australia": "AU",
+        "germany": "DE",
+        "france": "FR",
+        "japan": "JP",
+        "china": "CN",
+        "pakistan": "PK",
+        "bangladesh": "BD",
+        "nepal": "NP",
+        "italy": "IT",
+        "spain": "ES",
+        "brazil": "BR",
+        "south korea": "KR",
+        "singapore": "SG",
+        "new zealand": "NZ"
+    };
+
+    async function searchUniversity() {
+
+        let country = document
+            .getElementById("country")
+            .value.trim().toLowerCase();
+
+        let results = document.getElementById("results");
+        let message = document.getElementById("message");
+
+        results.innerHTML = "";
+        message.textContent = "";
+
+        if (country === "") {
+            message.textContent = "Please enter a country name.";
+            return;
+        }
+
+        let countryCode = countries[country];
+
+        if (!countryCode) {
+            message.textContent =
+                "Country not supported. Try India, USA, UK, Canada or Australia.";
+
+            return;
+        }
+
+        message.textContent = "Loading universities...";
+
+        try {
+
+            let url =
+                "https://api.openalex.org/institutions" +
+                "?filter=country_code:" + countryCode +
+                ",type:education&per-page=50";
+
+            let response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error("API request failed");
+            }
+
+            let data = await response.json();
+
+            results.innerHTML = "";
+
+            if (!data.results || data.results.length === 0) {
+                message.textContent = "No universities found.";
+                return;
+            }
+
+            data.results.forEach(university => {
+
+                let card = document.createElement("div");
+                card.className = "university";
+
+                let name = document.createElement("h3");
+                name.textContent = university.display_name;
+
+                let state = document.createElement("p");
+                state.textContent =
+                    "State / Region: " +
+                    (university.geo?.region || "Not Available");
+
+                let website = document.createElement("p");
+
+                if (university.homepage_url) {
+
+                    let link = document.createElement("a");
+
+                    link.href = university.homepage_url;
+                    link.textContent = university.homepage_url;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+
+                    website.appendChild(link);
+
+                } else {
+                    website.textContent = "Website: Not Available";
+                }
+
+                card.appendChild(name);
+                card.appendChild(state);
+                card.appendChild(website);
+
+                results.appendChild(card);
+
+            });
+
+            message.textContent =
+                "Found " + data.results.length + " institutions.";
+
+        }
+
+        catch (error) {
+
+            message.textContent =
+                "Unable to fetch data. Please check your internet connection.";
+
+            console.log(error);
+
+        }
+    }
+
+</script>
+
+</body>
+</html>

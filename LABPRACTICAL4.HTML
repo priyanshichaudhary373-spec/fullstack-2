@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chessboard</title>
+</head>
+
+<body>
+
+    <h1 style="text-align:center;">Chessboard</h1>
+
+    <div id="chessboard"></div>
+
+    <script>
+
+        // Create chessboard
+        let board = document.getElementById("chessboard");
+
+        // Apply CSS properties using JavaScript
+        board.style.display = "grid";
+        board.style.gridTemplateColumns = "repeat(8, 50px)";
+        board.style.width = "400px";
+        board.style.border = "2px solid black";
+        board.style.margin = "auto";
+
+        // Create 64 squares
+        for (let row = 0; row < 8; row++) {
+
+            for (let col = 0; col < 8; col++) {
+
+                let square = document.createElement("div");
+
+                square.style.width = "50px";
+                square.style.height = "50px";
+
+                // Apply alternate colors
+                if ((row + col) % 2 === 0) {
+                    square.style.backgroundColor = "white";
+                }
+                else {
+                    square.style.backgroundColor = "black";
+                }
+
+                // Add square to chessboard
+                board.appendChild(square);
+
+            }
+        }
+
+    </script>
+
+</body>
+</html>

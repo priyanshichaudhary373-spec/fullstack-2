@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>snake and ladder game</title>
+    <link rel="stylesheet" href ="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1> snake and leader</h1>
+        <p id="turn">player 1's turn</p>
+    <div id="board" class="board"></div>
+    <div class="contrals"></div>
+    <div id="dice"></div>
+    <button id="rollbtn">Roll Dice</button>
+    <button id="resetbtn">New game</button>
+    <p id="status">Roll thr dice to start!</p>
+    </div>
+    </div>
+    <script scr="script.js"></script>    
+</body>
+</html>
+body{
+    margin:0;
+    padding:20px;
+    font-family:Arial,sans-serif;
+    background: linear-gradient(135deg,#d9e7ff,#fbe2fo);
+    text-align:centre,
+    coloe:#252747;
+}
+
+.container{
+    max-width 650px;
+    margin:auto;
+}
+
+h1{
+    color:#5545c7;
+}
+
+.board{
+    display:grid;
+    grid-template-column:repeat(10,1fr);
+    border:3px solid#5545c7;
+    background:white;
+}
+
+cell{
+    aspect-ratio:1;
+    boarder;1px solid #ddd;
+    position:3px;
+    font-size: clamp(9px,2vw,15px);
+    box-sizing:boarder-box;
+    background:#fff;
+}
+
+.cell{}

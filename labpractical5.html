@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snake and Ladder Game</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background-color: lightblue;
+        }
+
+        h1 {
+            color: darkblue;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(10, 45px);
+            width: 450px;
+            margin: 20px auto;
+        }
+
+        .cell {
+            width: 45px;
+            height: 45px;
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            font-weight: bold;
+        }
+
+        .player {
+            background-color: yellow;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Snake and Ladder Game</h1>
+
+    <div id="board"></div>
+
+    <button onclick="rollDice()">Roll Dice</button>
+
+    <p id="dice">Dice: 0</p>
+
+    <p id="result">Player Position: 0</p>
+
+    <script>
+
+        let position = 0;
+
+        let snakes = {
+            99: 54,
+            70: 55,
+            52: 42,
+            25: 2
+        };
+
+        let ladders = {
+            6: 25,
+            11: 40,
+            46: 90,
+            60: 85
+        };
+
+        let board = document.getElementById("board");
+
+        function createBoard() {
+
+            for (let i = 100; i >= 1; i--) {
+
+                let cell = document.createElement("div");
+
+                cell.className = "cell";
+                cell.id = "cell" + i;
+                cell.textContent = i;
+
+                board.appendChild(cell);
+            }
+        }
+
+        function updateBoard() {
+
+            document.querySelectorAll(".cell").forEach(cell => {
+                cell.classList.remove("player");
+            });
+
+            if (position > 0) {
+                document.getElementById("cell" + position)
+                    .classList.add("player");
+            }
+        }
+
+        function rollDice() {
+
+            if (position === 100) {
+                return;
+            }
+
+            let dice = Math.floor(Math.random() * 6) + 1;
+
+            document.getElementById("dice").textContent =
+                "Dice: " + dice;
+
+            if (position + dice <= 100) {
+                position = position + dice;
+            }
+
+            if (snakes[position]) {
+                position = snakes[position];
+                alert("Snake! Go down.");
+            }
+
+            else if (ladders[position]) {
+                position = ladders[position];
+                alert("Ladder! Go up.");
+            }
+
+            updateBoard();
+
+            document.getElementById("result").textContent =
+                "Player Position: " + position;
+
+            if (position === 100) {
+                document.getElementById("result").textContent =
+                    "Congratulations! You Win!";
+            }
+        }
+
+        createBoard();
+
+    </script>
+
+</body>
+</html>

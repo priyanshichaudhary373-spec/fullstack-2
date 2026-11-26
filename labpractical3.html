@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do List</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: lightblue;
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        input {
+            padding: 10px;
+        }
+
+        button {
+            padding: 8px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        li {
+            list-style: none;
+            margin: 10px;
+            padding: 10px;
+            background-color: lightgray;
+        }
+
+        .completed {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>My To-Do List</h1>
+
+        <input type="text" id="taskInput"
+               placeholder="Enter a task">
+
+        <button onclick="addTask()">Add</button>
+
+        <ul id="taskList"></ul>
+
+    </div>
+
+    <script>
+
+        function addTask() {
+
+            let input = document.getElementById("taskInput");
+            let task = input.value.trim();
+
+            if (task === "") {
+                alert("Please enter a task");
+                return;
+            }
+
+            let li = document.createElement("li");
+
+            let checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+
+            let span = document.createElement("span");
+            span.textContent = task;
+
+            checkbox.onchange = function() {
+                span.classList.toggle("completed");
+            };
+
+            let deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+
+            deleteBtn.onclick = function() {
+                li.remove();
+            };
+
+            let upBtn = document.createElement("button");
+            upBtn.textContent = "Up";
+
+            upBtn.onclick = function() {
+                let previous = li.previousElementSibling;
+
+                if (previous) {
+                    li.parentNode.insertBefore(li, previous);
+                }
+            };
+
+            let downBtn = document.createElement("button");
+            downBtn.textContent = "Down";
+
+            downBtn.onclick = function() {
+                let next = li.nextElementSibling;
+
+                if (next) {
+                    li.parentNode.insertBefore(next, li);
+                }
+            };
+
+            li.append(checkbox, span, deleteBtn, upBtn, downBtn);
+
+            document.getElementById("taskList").appendChild(li);
+
+            input.value = "";
+        }
+
+    </script>
+
+</body>
+</html>
